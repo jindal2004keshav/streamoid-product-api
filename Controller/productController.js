@@ -109,4 +109,31 @@ async function handleUploadProducts(req, res, next) {
   }
 }
 
-module.exports = { handleUploadProducts };
+async function handleGetProducts(req, res, next){
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+    const con = getClient();
+
+    if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) {
+        return next(new HttpError("Invalid page or limit", 400));
+    }
+
+    const offset = (page-1)*limit;
+
+    try{
+        const productsRes = await con.query(
+          `SELECT * FROM products LIMIT $1 OFFSET $2`,
+          [limit, offset]
+        );
+        res.status(200).json({
+            page,
+            limit,
+            products: productsRes.rows
+        });
+    } catch(err){
+        console.log(err);
+        return next(new HttpError("Something went wrong while fetching products", 500));
+    }
+}
+
+module.exports = { handleUploadProducts, handleGetProducts};
