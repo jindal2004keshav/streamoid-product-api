@@ -1,0 +1,20 @@
+{
+  "name": "streamoid-product-api",
+  "version": "1.0.0",
+  "description": "Api Validator",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon App.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "nodemon": "^3.1.10",
+    "pg": "^8.16.3",
+    "sqlite3": "^5.1.7"
+  }
+}
