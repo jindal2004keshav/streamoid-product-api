@@ -136,4 +136,57 @@ async function handleGetProducts(req, res, next){
     }
 }
 
-module.exports = { handleUploadProducts, handleGetProducts};
+async function handleSearchProducts(req, res, next){
+    const {brand, color, minPrice, maxPrice} = req.query;
+
+    try{
+        let baseQuery = `SELECT * FROM products`;
+        let conditions = [];
+        let values = [];
+        const con = getClient();
+        
+        // Add filters dynamically
+        if (brand) {
+        values.push(brand);
+        conditions.push(`brand = $${values.length}`);
+        }
+
+        if (color) {
+        values.push(color);
+        conditions.push(`color = $${values.length}`);
+        }
+
+        if (minPrice) {
+        values.push(parseFloat(minPrice));
+        conditions.push(`price >= $${values.length}`);
+        }
+
+        if (maxPrice) {
+        values.push(parseFloat(maxPrice));
+        conditions.push(`price <= $${values.length}`);
+        }
+
+        // Combine all filters
+        if (conditions.length > 0) {
+        baseQuery += " WHERE " + conditions.join(" AND ");
+        }
+
+        // Execute query
+        const productsRes = await con.query(baseQuery, values);
+
+        // Return response
+        res.status(200).json({
+            count: productsRes.rows.length,
+            filters: { brand, color, minPrice, maxPrice },
+            products: productsRes.rows,
+        });
+
+    } catch(err){
+        console.error("Error searching products:", err);
+        return next(
+        new HttpError("Something went wrong while searching products", 500)
+        );
+    }
+}
+
+module.exports = { handleUploadProducts, handleGetProducts, handleSearchProducts};
