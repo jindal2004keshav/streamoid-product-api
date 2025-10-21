@@ -3,10 +3,10 @@ const { Client } = require('pg');
 
 // Connect to default postgres database
 const defaultClient = new Client({
-  host: "localhost",
-  user: "postgres",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
   port: 5432,
-  password: process.env.PASSWORD,
+  password: process.env.DB_PASSWORD,
   database: "postgres"
 });
 
@@ -35,10 +35,10 @@ async function initDatabase() {
 
     // Now connect to your actual database
     productClient = new Client({
-      host: "localhost",
-      user: "postgres",
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
       port: 5432,
-      password: process.env.PASSWORD,
+      password: process.env.DB_PASSWORD,
       database: dbName
     });
 

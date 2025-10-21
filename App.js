@@ -10,13 +10,11 @@ const app = express();
 app.use("/api/product", productRoute);
 
 app.use((req, res, next) => {
-    console.log("Skipped 1");
     const error = new HttpError("Could not find this route", 404);
     throw error;
 });
 
 app.use((error, req, res, next) => {
-    console.log("Skipped 2");
     if (res.headerSent) {
       return next(error);
     }
@@ -25,7 +23,7 @@ app.use((error, req, res, next) => {
     res.json({ message: error.message || "An unknown error occurred!" });
 });
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8081;
 app.listen(PORT, () => {
     const url = `http://localhost:${PORT}`;
     console.log(`Server is started at ${url}`);
